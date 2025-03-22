@@ -51,6 +51,7 @@ func (r *PermissionRepositoryImpl) CreatePermission(req *dto.CrPermission, creat
 	permission := dto.CrPermission{
 		Name:      req.Name,
 		CreatedBy: createdBy,
+		UpdatedBy: createdBy,
 	}
 	err = r.db.Create(&permission).Error
 	return permission.ID, err

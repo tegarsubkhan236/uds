@@ -6,19 +6,19 @@ import (
 )
 
 type MsMovie struct {
-	ID        int    `gorm:"primary_key"`
-	Title     string `gorm:"type:varchar(40);not null"`
-	VideoUrl  string `gorm:"type:varchar(255);not null"`
-	PosterUrl string `gorm:"type:varchar(255);not null"`
+	ID        int    `gorm:"primary_key" json:"id"`
+	Title     string `gorm:"type:varchar(40);not null" json:"title"`
+	VideoUrl  string `gorm:"type:varchar(255);not null" json:"video_url"`
+	PosterUrl string `gorm:"type:varchar(255);not null" json:"poster_url"`
 
-	CreatedAt time.Time `gorm:"autoCreateTime"`
-	CreatedBy string    `gorm:"type:varchar(20);null"`
+	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"`
+	CreatedBy string    `gorm:"type:varchar(20);null" json:"created_by"`
 
-	UpdatedAt time.Time `gorm:"autoUpdateTime"`
-	UpdatedBy string    `gorm:"type:varchar(20);null"`
+	UpdatedAt time.Time `gorm:"autoUpdateTime" json:"updated_at"`
+	UpdatedBy string    `gorm:"type:varchar(20);null" json:"updated_by"`
 
-	DeletedAt gorm.DeletedAt `gorm:"index"`
-	DeletedBy string         `gorm:"type:varchar(20);null"`
+	DeletedAt gorm.DeletedAt `gorm:"index" json:"deleted_at"`
+	DeletedBy string         `gorm:"type:varchar(20);null" json:"deleted_by"`
 }
 
 type MovieInsertRequest struct {

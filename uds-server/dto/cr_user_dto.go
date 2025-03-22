@@ -6,23 +6,23 @@ import (
 )
 
 type CrUser struct {
-	ID       int    `gorm:"primary_key;auto_increment;not_null"`
-	Username string `gorm:"not_null;size:255"`
-	Name     string `gorm:"not_null;size:40"`
-	Email    string `gorm:"not_null;size:255"`
-	Password string `gorm:"not_null;size:500"`
-	Status   int    `gorm:"not_null;default:2"`
-	RoleID   int    `gorm:"not_null;index:idx_role_id"`
-	Role     CrRole `gorm:"foreignkey:RoleID;association_foreignkey:ID"`
+	ID       int    `gorm:"primary_key;auto_increment;not_null" json:"id"`
+	Username string `gorm:"not_null;size:255" json:"username"`
+	Name     string `gorm:"not_null;size:40" json:"name"`
+	Email    string `gorm:"not_null;size:255" json:"email"`
+	Password string `gorm:"not_null;size:500" json:"password"`
+	Status   int    `gorm:"not_null;default:2" json:"status"`
+	RoleID   int    `gorm:"not_null;index:idx_role_id" json:"role_id"`
+	Role     CrRole `gorm:"foreignkey:RoleID;association_foreignkey:ID" json:"role"`
 
-	CreatedAt time.Time `gorm:"autoCreateTime"`
-	CreatedBy string    `gorm:"type:varchar(20);null"`
+	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"`
+	CreatedBy string    `gorm:"type:varchar(20);null" json:"created_by"`
 
-	UpdatedAt time.Time `gorm:"autoUpdateTime"`
-	UpdatedBy string    `gorm:"type:varchar(20);null"`
+	UpdatedAt time.Time `gorm:"autoUpdateTime" json:"updated_at"`
+	UpdatedBy string    `gorm:"type:varchar(20);null" json:"updated_by"`
 
-	DeletedAt gorm.DeletedAt `gorm:"index"`
-	DeletedBy string         `gorm:"type:varchar(20);null"`
+	DeletedAt gorm.DeletedAt `gorm:"index" json:"deleted_at"`
+	DeletedBy string         `gorm:"type:varchar(20);null" json:"deleted_by"`
 }
 
 type AuthRequest struct {

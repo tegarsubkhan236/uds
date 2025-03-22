@@ -56,6 +56,7 @@ func (r *RoleRepositoryImpl) CreateRole(req *dto.CrRole, createdBy string) (id i
 	role := dto.CrRole{
 		Name:      req.Name,
 		CreatedBy: createdBy,
+		UpdatedBy: createdBy,
 	}
 	err = r.db.Create(&role).Error
 	return role.ID, err

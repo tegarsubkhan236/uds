@@ -6,17 +6,17 @@ import (
 )
 
 type CrPermission struct {
-	ID   int    `gorm:"primary_key"`
-	Name string `gorm:"type:varchar(255);not null"`
+	ID   int    `gorm:"primary_key" json:"id"`
+	Name string `gorm:"type:varchar(255);not null" json:"name"`
 
-	CreatedAt time.Time `gorm:"autoCreateTime"`
-	CreatedBy string    `gorm:"type:varchar(20);null"`
+	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"`
+	CreatedBy string    `gorm:"type:varchar(20);null" json:"created_by"`
 
-	UpdatedAt time.Time `gorm:"autoUpdateTime"`
-	UpdatedBy string    `gorm:"type:varchar(20);null"`
+	UpdatedAt time.Time `gorm:"autoUpdateTime" json:"updated_at"`
+	UpdatedBy string    `gorm:"type:varchar(20);null" json:"updated_by"`
 
-	DeletedAt gorm.DeletedAt `gorm:"index"`
-	DeletedBy string         `gorm:"type:varchar(20);null"`
+	DeletedAt gorm.DeletedAt `gorm:"index" json:"deleted_at"`
+	DeletedBy string         `gorm:"type:varchar(20);null" json:"deleted_by"`
 }
 
 type PermissionInsertRequest struct {

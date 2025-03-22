@@ -1,10 +1,10 @@
 package dto
 
 type CrRolePermission struct {
-	PermissionID int          `gorm:"primary_key"`
-	RoleID       int          `gorm:"primary_key"`
-	Role         CrRole       `gorm:"foreignkey:RoleID"`
-	Permission   CrPermission `gorm:"foreignkey:PermissionID"`
+	PermissionID int          `gorm:"primary_key" json:"permission_id"`
+	RoleID       int          `gorm:"primary_key" json:"role_id"`
+	Role         CrRole       `gorm:"foreignkey:RoleID" json:"role"`
+	Permission   CrPermission `gorm:"foreignkey:PermissionID" json:"permission"`
 }
 
 type RolePermissionResponse struct {

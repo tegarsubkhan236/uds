@@ -80,6 +80,7 @@ func (u UserRepositoryImpl) CreateUser(req *dto.CrUser, createdBy string) (id in
 		Status:    req.Status,
 		RoleID:    req.RoleID,
 		CreatedBy: createdBy,
+		UpdatedBy: createdBy,
 	}
 	err = u.db.Create(&data).Error
 

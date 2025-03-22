@@ -51,6 +51,7 @@ func (m movieRepositoryImpl) CreateMovie(req *dto.MsMovie, createdBy string) (id
 		VideoUrl:  req.VideoUrl,
 		PosterUrl: req.PosterUrl,
 		CreatedBy: createdBy,
+		UpdatedBy: createdBy,
 	}
 	err = m.db.Create(&item).Error
 	return item.ID, err
