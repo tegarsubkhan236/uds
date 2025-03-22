@@ -38,6 +38,7 @@ const useMovieApi = () => {
         setLoading(true);
         setError(null);
         try {
+            // TODO return hanya id bukan objek dari movie
             const newMovie = await createMovie(movieData);
             setMovies((prevMovies) => [...prevMovies, newMovie]);
         } catch (err) {

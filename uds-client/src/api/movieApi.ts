@@ -4,8 +4,8 @@ import axiosInstance from "../axios.ts";
 export type Movie = {
     id: number;
     title: string;
-    director: string;
-    releaseDate: string;
+    video_url: File;
+    poster_url: File;
 }
 
 type Meta = {
@@ -36,7 +36,16 @@ const MovieApi = () => {
     };
 
     const createMovie = async (movie: Omit<Movie, 'id'>): Promise<Movie> => {
-        const response: AxiosResponse<Movie> = await axiosInstance.post('/movies', movie);
+        const formData = new FormData();
+        formData.append('title', movie.title);
+        formData.append('poster_file', movie.poster_url);
+        formData.append('video_file', movie.video_url);
+
+        const response = await axiosInstance.post('/movie/create', formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
         return response.data;
     };
 
