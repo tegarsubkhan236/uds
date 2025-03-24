@@ -12,7 +12,7 @@ type MovieService interface {
 	GetMovies(page, limit int) (int, int, int, []dto.MsMovie, error)
 	GetMovieById(id int) (*dto.MsMovie, error)
 	CreateMovie(req *dto.MsMovie, videoFile *multipart.FileHeader, posterFile *multipart.FileHeader, createdBy string) error
-	UpdateMovie(req *dto.MsMovie, videoFile *multipart.FileHeader, posterFile *multipart.FileHeader, updatedBy string) error
+	UpdateMovie(id int, req *dto.MsMovie, videoFile *multipart.FileHeader, posterFile *multipart.FileHeader, updatedBy string) error
 	DeleteMovie(id int, deletedBy string) error
 }
 
@@ -59,8 +59,8 @@ func (m movieServiceImpl) CreateMovie(req *dto.MsMovie, videoFile *multipart.Fil
 	return nil
 }
 
-func (m movieServiceImpl) UpdateMovie(req *dto.MsMovie, videoFile *multipart.FileHeader, posterFile *multipart.FileHeader, updatedBy string) error {
-	item, err := m.repo.GetMovieByID(req.ID)
+func (m movieServiceImpl) UpdateMovie(id int, req *dto.MsMovie, videoFile *multipart.FileHeader, posterFile *multipart.FileHeader, updatedBy string) error {
+	item, err := m.repo.GetMovieByID(id)
 	if err != nil {
 		return err
 	}
@@ -81,7 +81,7 @@ func (m movieServiceImpl) UpdateMovie(req *dto.MsMovie, videoFile *multipart.Fil
 		req.PosterUrl = posterUrl
 	}
 
-	return m.repo.UpdateMovie(req, updatedBy)
+	return m.repo.UpdateMovie(id, req, updatedBy)
 }
 
 func (m movieServiceImpl) DeleteMovie(id int, deletedBy string) error {

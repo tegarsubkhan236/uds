@@ -16,6 +16,12 @@ var (
 	trans    ut.Translator
 )
 
+const (
+	ParseBody  = "body"
+	ParseQuery = "query"
+	ParseParam = "param"
+)
+
 func init() {
 	validate = validator.New()
 
@@ -27,52 +33,49 @@ func init() {
 	}
 }
 
-func ParseAndValidate(c *fiber.Ctx, body any) error {
+func ParseAndValidate(ctx *fiber.Ctx, body any, source string) error {
 	v := reflect.ValueOf(body)
+	if v.Kind() != reflect.Pointer {
+		return ResponseBadRequest(ctx, "Body must be pointer")
+	}
 
-	switch v.Kind() {
-	case reflect.Ptr:
-		switch c.Method() {
-		case fiber.MethodPost, fiber.MethodPut:
-			err := parseBody(c, body)
-			if err != nil {
-				return err
-			}
-		case fiber.MethodGet, fiber.MethodDelete:
-			err := parseQuery(c, body)
-			if err != nil {
-				return err
-			}
+	switch source {
+	case ParseBody:
+		if err := parseBody(ctx, body); err != nil {
+			return err
 		}
-		return validateStruct(v.Elem().Interface())
-	case reflect.Struct:
-		switch c.Method() {
-		case fiber.MethodPost, fiber.MethodPut:
-			err := parseBody(c, &body)
-			if err != nil {
-				return err
-			}
-		case fiber.MethodGet, fiber.MethodDelete:
-			err := parseQuery(c, &body)
-			if err != nil {
-				return err
-			}
+		return validateStruct(body)
+	case ParseQuery:
+		if err := parseQuery(ctx, body); err != nil {
+			return err
 		}
-		return validateStruct(v)
+		return validateStruct(body)
+	case ParseParam:
+		if err := parseParam(ctx, body); err != nil {
+			return err
+		}
+		return validateStruct(body)
 	default:
-		return nil
+		return ResponseBadRequest(ctx, "Invalid parse source")
 	}
 }
 
-func parseBody(c *fiber.Ctx, body any) error {
-	if err := c.BodyParser(body); err != nil {
+func parseBody(ctx *fiber.Ctx, body any) error {
+	if err := ctx.BodyParser(body); err != nil {
 		return err
 	}
 	return nil
 }
 
-func parseQuery(c *fiber.Ctx, body any) error {
-	if err := c.QueryParser(body); err != nil {
+func parseQuery(ctx *fiber.Ctx, body any) error {
+	if err := ctx.QueryParser(body); err != nil {
+		return err
+	}
+	return nil
+}
+
+func parseParam(ctx *fiber.Ctx, body any) error {
+	if err := ctx.ParamsParser(body); err != nil {
 		return err
 	}
 	return nil

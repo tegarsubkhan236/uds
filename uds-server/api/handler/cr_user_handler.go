@@ -10,7 +10,7 @@ import (
 func UserIndex(service service.UserService) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		req := new(utils.RequestPaginate)
-		if err := utils.ParseAndValidate(ctx, req); err != nil {
+		if err := utils.ParseAndValidate(ctx, req, utils.ParseQuery); err != nil {
 			return utils.ResponseBadRequest(ctx, err.Error())
 		}
 
@@ -31,7 +31,7 @@ func UserIndex(service service.UserService) fiber.Handler {
 func UserShow(service service.UserService) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		req := new(utils.RequestID)
-		if err := utils.ParseAndValidate(ctx, req); err != nil {
+		if err := utils.ParseAndValidate(ctx, req, utils.ParseParam); err != nil {
 			return utils.ResponseBadRequest(ctx, err.Error())
 		}
 
@@ -47,7 +47,7 @@ func UserShow(service service.UserService) fiber.Handler {
 func UserInsert(service service.UserService) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		req := new(dto.UserInsertRequest)
-		if err := utils.ParseAndValidate(ctx, req); err != nil {
+		if err := utils.ParseAndValidate(ctx, req, utils.ParseBody); err != nil {
 			return utils.ResponseBadRequest(ctx, err.Error())
 		}
 
@@ -68,7 +68,7 @@ func UserInsert(service service.UserService) fiber.Handler {
 func UserUpdate(service service.UserService) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		req := new(dto.UserUpdateRequest)
-		if err := utils.ParseAndValidate(ctx, req); err != nil {
+		if err := utils.ParseAndValidate(ctx, req, utils.ParseBody); err != nil {
 			return utils.ResponseBadRequest(ctx, err.Error())
 		}
 
@@ -89,7 +89,7 @@ func UserUpdate(service service.UserService) fiber.Handler {
 func UserDelete(service service.UserService) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		req := new(utils.RequestID)
-		if err := utils.ParseAndValidate(ctx, req); err != nil {
+		if err := utils.ParseAndValidate(ctx, req, utils.ParseParam); err != nil {
 			return utils.ResponseBadRequest(ctx, err.Error())
 		}
 

@@ -26,7 +26,7 @@ const MovieApi = () => {
             limit: limit.toString(),
         });
 
-        const response: AxiosResponse<MovieApiResponse> = await axiosInstance.get(`/movie?${queryParams}`);
+        const response: AxiosResponse<MovieApiResponse> = await axiosInstance.get(`/movies?${queryParams}`);
         return response.data.data;
     };
 
@@ -35,13 +35,13 @@ const MovieApi = () => {
         return response.data;
     };
 
-    const createMovie = async (movie: Omit<Movie, 'id'>): Promise<Movie> => {
+    const createMovie = async (movie: Omit<Movie, 'id'>): Promise<number> => {
         const formData = new FormData();
         formData.append('title', movie.title);
         formData.append('poster_file', movie.poster_url);
         formData.append('video_file', movie.video_url);
 
-        const response = await axiosInstance.post('/movie/create', formData, {
+        const response:AxiosResponse<number> = await axiosInstance.post('/movies', formData, {
             headers: {
                 "Content-Type": "multipart/form-data",
             },

@@ -11,7 +11,7 @@ import (
 func RoleIndex(service service.RoleService) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		req := new(utils.RequestPaginate)
-		if err := utils.ParseAndValidate(ctx, req); err != nil {
+		if err := utils.ParseAndValidate(ctx, req, utils.ParseQuery); err != nil {
 			return utils.ResponseBadRequest(ctx, err.Error())
 		}
 
@@ -32,7 +32,7 @@ func RoleIndex(service service.RoleService) fiber.Handler {
 func RoleShow(service service.RoleService) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		req := new(utils.RequestID)
-		if err := utils.ParseAndValidate(ctx, req); err != nil {
+		if err := utils.ParseAndValidate(ctx, req, utils.ParseParam); err != nil {
 			return utils.ResponseBadRequest(ctx, err.Error())
 		}
 
@@ -48,7 +48,7 @@ func RoleShow(service service.RoleService) fiber.Handler {
 func RoleInsert(service service.RoleService) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		req := new(dto.RoleInsertRequest)
-		if err := utils.ParseAndValidate(ctx, req); err != nil {
+		if err := utils.ParseAndValidate(ctx, req, utils.ParseBody); err != nil {
 			return utils.ResponseBadRequest(ctx, err.Error())
 		}
 
@@ -69,7 +69,7 @@ func RoleInsert(service service.RoleService) fiber.Handler {
 func RoleUpdate(service service.RoleService) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		req := new(dto.RoleUpdateRequest)
-		if err := utils.ParseAndValidate(ctx, req); err != nil {
+		if err := utils.ParseAndValidate(ctx, req, utils.ParseBody); err != nil {
 			return utils.ResponseBadRequest(ctx, err.Error())
 		}
 
@@ -90,7 +90,7 @@ func RoleUpdate(service service.RoleService) fiber.Handler {
 func RoleDelete(service service.RoleService) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		req := new(utils.RequestID)
-		if err := utils.ParseAndValidate(ctx, req); err != nil {
+		if err := utils.ParseAndValidate(ctx, req, utils.ParseParam); err != nil {
 			return utils.ResponseBadRequest(ctx, err.Error())
 		}
 

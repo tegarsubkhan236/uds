@@ -14,7 +14,7 @@ import (
 func HandleFetchAllMovie(service service.MovieService) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		req := new(utils.RequestPaginate)
-		if err := utils.ParseAndValidate(ctx, req); err != nil {
+		if err := utils.ParseAndValidate(ctx, req, utils.ParseQuery); err != nil {
 			return utils.ResponseBadRequest(ctx, err.Error())
 		}
 
@@ -30,7 +30,7 @@ func HandleFetchAllMovie(service service.MovieService) fiber.Handler {
 func HandleFetchDetailMovie(service service.MovieService) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		req := new(utils.RequestID)
-		if err := utils.ParseAndValidate(ctx, req); err != nil {
+		if err := utils.ParseAndValidate(ctx, req, utils.ParseParam); err != nil {
 			return utils.ResponseBadRequest(ctx, err.Error())
 		}
 
@@ -45,33 +45,8 @@ func HandleFetchDetailMovie(service service.MovieService) fiber.Handler {
 
 func HandleCreateMovie(service service.MovieService) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
-		req := new(dto.MovieInsertRequest)
-		if err := utils.ParseAndValidate(ctx, req); err != nil {
-			return utils.ResponseBadRequest(ctx, err.Error())
-		}
-
-		videoFile, err := ctx.FormFile("video_file")
-		if err != nil {
-			return utils.ResponseBadRequest(ctx, err.Error())
-		}
-
-		posterFile, err := ctx.FormFile("poster_file")
-		if err != nil {
-			return utils.ResponseBadRequest(ctx, err.Error())
-		}
-
-		if err := service.CreateMovie(req.ToEntity(), videoFile, posterFile, "TEST CREATE USER"); err != nil {
-			return utils.ResponseInternalServerError(ctx, err.Error())
-		}
-
-		return utils.ResponseCreated(ctx)
-	}
-}
-
-func HandleUpdateMovie(service service.MovieService) fiber.Handler {
-	return func(ctx *fiber.Ctx) error {
-		req := new(dto.MovieUpdateRequest)
-		if err := utils.ParseAndValidate(ctx, req); err != nil {
+		req := new(dto.MovieRequest)
+		if err := utils.ParseAndValidate(ctx, req, utils.ParseBody); err != nil {
 			return utils.ResponseBadRequest(ctx, err.Error())
 		}
 
@@ -90,7 +65,42 @@ func HandleUpdateMovie(service service.MovieService) fiber.Handler {
 		//	return utils.ResponseUnauthorized(ctx)
 		//}
 
-		if err := service.UpdateMovie(req.ToEntity(), videoFile, posterFile, "TEST UPDATE USER"); err != nil {
+		if err := service.CreateMovie(req.ToEntity(), videoFile, posterFile, "TEST CREATE USER"); err != nil {
+			return utils.ResponseInternalServerError(ctx, err.Error())
+		}
+
+		return utils.ResponseCreated(ctx)
+	}
+}
+
+func HandleUpdateMovie(service service.MovieService) fiber.Handler {
+	return func(ctx *fiber.Ctx) error {
+		reqID := new(utils.RequestID)
+		if err := utils.ParseAndValidate(ctx, reqID, utils.ParseParam); err != nil {
+			return utils.ResponseBadRequest(ctx, err.Error())
+		}
+
+		req := new(dto.MovieRequest)
+		if err := utils.ParseAndValidate(ctx, req, utils.ParseBody); err != nil {
+			return utils.ResponseBadRequest(ctx, err.Error())
+		}
+
+		videoFile, err := ctx.FormFile("video_file")
+		if err != nil {
+			return utils.ResponseBadRequest(ctx, err.Error())
+		}
+
+		posterFile, err := ctx.FormFile("poster_file")
+		if err != nil {
+			return utils.ResponseBadRequest(ctx, err.Error())
+		}
+
+		//username, err := utils.Me(ctx)
+		//if err != nil {
+		//	return utils.ResponseUnauthorized(ctx)
+		//}
+
+		if err := service.UpdateMovie(reqID.ID, req.ToEntity(), videoFile, posterFile, "TEST UPDATE USER"); err != nil {
 			return utils.ResponseInternalServerError(ctx, err.Error())
 		}
 
@@ -101,7 +111,7 @@ func HandleUpdateMovie(service service.MovieService) fiber.Handler {
 func HandleDeleteMovie(service service.MovieService) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		req := new(utils.RequestID)
-		if err := utils.ParseAndValidate(ctx, req); err != nil {
+		if err := utils.ParseAndValidate(ctx, req, utils.ParseParam); err != nil {
 			return utils.ResponseBadRequest(ctx, err.Error())
 		}
 
@@ -121,7 +131,7 @@ func HandleDeleteMovie(service service.MovieService) fiber.Handler {
 func HandleStreamMovie(service service.MovieService) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		req := new(utils.RequestID)
-		if err := utils.ParseAndValidate(ctx, req); err != nil {
+		if err := utils.ParseAndValidate(ctx, req, utils.ParseParam); err != nil {
 			return utils.ResponseBadRequest(ctx, err.Error())
 		}
 

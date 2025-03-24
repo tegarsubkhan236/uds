@@ -1,13 +1,20 @@
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import useMovieApi from "./hooks/useMovieApi.ts";
 import {Movie} from "./api/movieApi.ts";
 
 function App() {
     const [page] = useState(1);
     const [limit] = useState(10);
-
-    const {movies, loading, error, fetchMoviesList, createNewMovie} = useMovieApi()
-
+    const {
+        data,
+        loading,
+        error,
+        fetchMoviesHandler,
+        fetchMovieByIdHandler,
+        createMovieHandler,
+        // updateMovieHandler,
+        // deleteMovieHandler,
+    } = useMovieApi()
     const [newMovie, setNewMovie] = useState({
         title: '',
         poster_url: null as File | null,
@@ -38,16 +45,16 @@ function App() {
             return;
         }
 
-        await createNewMovie({title, poster_url, video_url});
+        await createMovieHandler({title, poster_url, video_url});
         setNewMovie({title: '', poster_url: null, video_url: null});
     };
 
     useEffect(() => {
-        fetchMoviesList(page, limit)
+        fetchMoviesHandler(page, limit)
     }, [limit, page]);
 
     const handleFetchMovie = async (id: number) => {
-        console.log(id)
+        return await fetchMovieByIdHandler(id);
     }
 
     if (loading) return <div>Loading...</div>
@@ -84,22 +91,34 @@ function App() {
             </form>
             <hr/>
             <hr/>
-            <ol>
-                {movies.map((movie: Movie) => (
-                    <li key={movie.id}>
-                        {movie.title} |
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                {data.map((movie: Movie) => (
+                <tr key={movie.id}>
+                    <td>{movie.id}</td>
+                    <td>{movie.title}</td>
+                    <td>
                         <button onClick={() => handleFetchMovie(movie.id)}>
                             View Detail
-                        </button> |
+                        </button>|
                         <button onClick={() => handleFetchMovie(movie.id)}>
                             Delete
-                        </button> |
+                        </button>|
                         <button onClick={() => handleFetchMovie(movie.id)}>
                             Update
                         </button>
-                    </li>
+                    </td>
+                </tr>
                 ))}
-            </ol>
+                </tbody>
+            </table>
             <hr/>
         </>
     )

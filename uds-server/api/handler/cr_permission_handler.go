@@ -10,7 +10,7 @@ import (
 func PermissionIndex(service service.PermissionService) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		req := new(utils.RequestPaginate)
-		if err := utils.ParseAndValidate(ctx, req); err != nil {
+		if err := utils.ParseAndValidate(ctx, req, utils.ParseQuery); err != nil {
 			return utils.ResponseBadRequest(ctx, err.Error())
 		}
 
@@ -19,19 +19,14 @@ func PermissionIndex(service service.PermissionService) fiber.Handler {
 			return utils.ResponseInternalServerError(ctx, err.Error())
 		}
 
-		responses := make([]dto.PermissionResponse, len(result))
-		for i, p := range result {
-			responses[i] = p.ToResponse()
-		}
-
-		return utils.ResponseOKWithPages(ctx, currentPage, lastPage, totalData, responses)
+		return utils.ResponseOKWithPages(ctx, currentPage, lastPage, totalData, result)
 	}
 }
 
 func PermissionShow(service service.PermissionService) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		req := new(utils.RequestID)
-		if err := utils.ParseAndValidate(ctx, req); err != nil {
+		if err := utils.ParseAndValidate(ctx, req, utils.ParseParam); err != nil {
 			return utils.ResponseBadRequest(ctx, err.Error())
 		}
 
@@ -40,14 +35,14 @@ func PermissionShow(service service.PermissionService) fiber.Handler {
 			return utils.ResponseInternalServerError(ctx, err.Error())
 		}
 
-		return utils.ResponseOK(ctx, result.ToResponse())
+		return utils.ResponseOK(ctx, result)
 	}
 }
 
 func PermissionInsert(service service.PermissionService) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
-		req := new(dto.PermissionInsertRequest)
-		if err := utils.ParseAndValidate(ctx, req); err != nil {
+		req := new(dto.PermissionRequest)
+		if err := utils.ParseAndValidate(ctx, req, utils.ParseBody); err != nil {
 			return utils.ResponseBadRequest(ctx, err.Error())
 		}
 
@@ -66,8 +61,8 @@ func PermissionInsert(service service.PermissionService) fiber.Handler {
 
 func PermissionUpdate(service service.PermissionService) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
-		req := new(dto.PermissionUpdateRequest)
-		if err := utils.ParseAndValidate(ctx, req); err != nil {
+		req := new(dto.PermissionRequest)
+		if err := utils.ParseAndValidate(ctx, req, utils.ParseBody); err != nil {
 			return utils.ResponseBadRequest(ctx, err.Error())
 		}
 
@@ -87,7 +82,7 @@ func PermissionUpdate(service service.PermissionService) fiber.Handler {
 func PermissionDelete(service service.PermissionService) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		req := new(utils.RequestID)
-		if err := utils.ParseAndValidate(ctx, req); err != nil {
+		if err := utils.ParseAndValidate(ctx, req, utils.ParseParam); err != nil {
 			return utils.ResponseBadRequest(ctx, err.Error())
 		}
 

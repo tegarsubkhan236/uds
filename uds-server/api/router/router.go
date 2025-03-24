@@ -46,13 +46,13 @@ func SetupRouter(
 		user.Delete("/delete", handler.UserDelete(deps.UserService))
 	})
 
-	r.Route("/movie", func(movie fiber.Router) {
+	r.Route("/movies", func(movie fiber.Router) {
 		//movie.Use(middleware.Protected())
 		movie.Get("/", handler.HandleFetchAllMovie(deps.MovieService))
-		movie.Get("/show", handler.HandleFetchDetailMovie(deps.MovieService))
-		movie.Post("/create", handler.HandleCreateMovie(deps.MovieService))
-		movie.Put("/update", handler.HandleUpdateMovie(deps.MovieService))
-		movie.Delete("/delete", handler.HandleDeleteMovie(deps.MovieService))
-		movie.Get("/stream", handler.HandleStreamMovie(deps.MovieService))
+		movie.Get("/:id", handler.HandleFetchDetailMovie(deps.MovieService))
+		movie.Post("/", handler.HandleCreateMovie(deps.MovieService))
+		movie.Put("/:id", handler.HandleUpdateMovie(deps.MovieService))
+		movie.Delete("/:id", handler.HandleDeleteMovie(deps.MovieService))
+		movie.Get("/:id/stream", handler.HandleStreamMovie(deps.MovieService))
 	})
 }

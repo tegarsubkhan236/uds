@@ -3,18 +3,18 @@ import movieApi, {Movie} from "../api/movieApi.ts";
 import {handleError} from "../utils.ts";
 
 const useMovieApi = () => {
-    const [movies, setMovies] = useState<Movie[]>([]);
+    const [data, setData] = useState<Movie[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
     const { fetchMovies, fetchMovieById, createMovie, updateMovie, deleteMovie } = movieApi();
 
-    const fetchMoviesList = useCallback(async (page: number, limit: number) => {
+    const fetchMoviesHandler = useCallback(async (page: number, limit: number) => {
         setLoading(true);
         setError(null);
         try {
             const fetchedMovies = await fetchMovies(page, limit);
-            setMovies(fetchedMovies);
+            setData(fetchedMovies);
         } catch (err) {
             setError(handleError(err));
         } finally {
@@ -22,7 +22,7 @@ const useMovieApi = () => {
         }
     }, [fetchMovies]);
 
-    const fetchMovie = useCallback(async (id: number) => {
+    const fetchMovieByIdHandler = useCallback(async (id: number) => {
         setLoading(true);
         setError(null);
         try {
@@ -34,26 +34,26 @@ const useMovieApi = () => {
         }
     }, [fetchMovieById]);
 
-    const createNewMovie = useCallback(async (movieData: Omit<Movie, 'id'>) => {
+    const createMovieHandler = useCallback(async (movieData: Omit<Movie, 'id'>) => {
         setLoading(true);
         setError(null);
         try {
-            // TODO return hanya id bukan objek dari movie
-            const newMovie = await createMovie(movieData);
-            setMovies((prevMovies) => [...prevMovies, newMovie]);
+            const newMovieID = await createMovie(movieData);
+            const newMovie = await fetchMovieById(newMovieID);
+            setData((prevMovies) => [...prevMovies, newMovie]);
         } catch (err) {
             setError(handleError(err));
         } finally {
             setLoading(false);
         }
-    }, [createMovie]);
+    }, [createMovie, fetchMovieById]);
 
-    const updateMovieDetails = useCallback(async (id: number, movieData: Partial<Movie>) => {
+    const updateMovieHandler = useCallback(async (id: number, movieData: Partial<Movie>) => {
         setLoading(true);
         setError(null);
         try {
             const updatedMovie = await updateMovie(id, movieData);
-            setMovies((prevMovies) =>
+            setData((prevMovies) =>
                 prevMovies.map((movie) =>
                     movie.id === updatedMovie.id ? updatedMovie : movie
                 )
@@ -65,12 +65,12 @@ const useMovieApi = () => {
         }
     }, [updateMovie]);
 
-    const deleteMovieById = useCallback(async (id: number) => {
+    const deleteMovieHandler = useCallback(async (id: number) => {
         setLoading(true);
         setError(null);
         try {
             await deleteMovie(id);
-            setMovies((prevMovies) => prevMovies.filter((movie) => movie.id !== id)); // Remove deleted movie from state
+            setData((prevMovies) => prevMovies.filter((movie) => movie.id !== id)); // Remove deleted movie from state
         } catch (err) {
             setError(handleError(err));
         } finally {
@@ -79,14 +79,14 @@ const useMovieApi = () => {
     }, [deleteMovie]);
 
     return {
-        movies,
+        data,
         loading,
         error,
-        fetchMoviesList,
-        fetchMovie,
-        createNewMovie,
-        updateMovieDetails,
-        deleteMovieById,
+        fetchMoviesHandler,
+        fetchMovieByIdHandler,
+        createMovieHandler,
+        updateMovieHandler,
+        deleteMovieHandler,
     };
 };
 

@@ -10,7 +10,7 @@ import (
 func Login(service service.UserService) fiber.Handler {
 	return func(ctx *fiber.Ctx) error {
 		req := new(dto.AuthRequest)
-		if err := utils.ParseAndValidate(ctx, req); err != nil {
+		if err := utils.ParseAndValidate(ctx, req, utils.ParseBody); err != nil {
 			return utils.ResponseBadRequest(ctx, err.Error())
 		}
 

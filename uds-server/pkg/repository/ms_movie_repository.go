@@ -9,7 +9,7 @@ type MovieRepository interface {
 	GetMovies(page, limit int) (res []dto.MsMovie, totalRow int, err error)
 	GetMovieByID(id int) (res *dto.MsMovie, err error)
 	CreateMovie(req *dto.MsMovie, createdBy string) (id int, err error)
-	UpdateMovie(req *dto.MsMovie, updatedBy string) error
+	UpdateMovie(id int, req *dto.MsMovie, updatedBy string) error
 	DeleteMovie(id int, deletedBy string) error
 }
 
@@ -57,7 +57,7 @@ func (m movieRepositoryImpl) CreateMovie(req *dto.MsMovie, createdBy string) (id
 	return item.ID, err
 }
 
-func (m movieRepositoryImpl) UpdateMovie(req *dto.MsMovie, updatedBy string) error {
+func (m movieRepositoryImpl) UpdateMovie(id int, req *dto.MsMovie, updatedBy string) error {
 	data := map[string]any{
 		"Title":     req.Title,
 		"VideoUrl":  req.VideoUrl,
@@ -65,7 +65,7 @@ func (m movieRepositoryImpl) UpdateMovie(req *dto.MsMovie, updatedBy string) err
 		"UpdatedBy": updatedBy,
 	}
 	return m.db.Model(&dto.MsMovie{}).
-		Where("id = ?", req.ID).
+		Where("id = ?", id).
 		Updates(data).Error
 }
 
