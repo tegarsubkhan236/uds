@@ -2,7 +2,7 @@ import {useCallback, useState} from "react";
 import movieApi, {Movie} from "../api/movieApi.ts";
 import {handleError} from "../utils.ts";
 
-const useMovieApi = () => {
+export const useMovieApi = () => {
     const [data, setData] = useState<Movie[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
@@ -89,5 +89,3 @@ const useMovieApi = () => {
         deleteMovieHandler,
     };
 };
-
-export default useMovieApi;
