@@ -1,5 +1,5 @@
 import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
-import {useAuth} from "./hooks/useAuth.ts";
+import {useAuthApi} from "./hooks/useAuthApi.ts";
 import Dashboard from "./layouts/Dashboard.tsx";
 import Login from "./pages/Login.tsx";
 import VoD from "./pages/VoD.tsx";
@@ -7,7 +7,7 @@ import Home from "./pages/Home.tsx";
 import Streaming from "./pages/Streaming.tsx";
 
 const PrivateRoute = () => {
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated } = useAuthApi();
     if (!isAuthenticated) {
         return <Navigate to="/login" replace />;
     } else  {

@@ -4,7 +4,6 @@ import (
 	"math"
 	"myapp/api"
 	"myapp/dto"
-	"myapp/pkg/config"
 	"myapp/pkg/repository"
 	"time"
 
@@ -23,7 +22,7 @@ type UserService interface {
 	UpdateUser(req *dto.CrUser, updatedBy string) error
 	DeleteUser(id int, deletedBy string) error
 
-	checkPasswordHash(password, hash string) bool
+	checkPasswordHash(password, hash string) error
 	hashPassword(password string) (string, error)
 }
 
@@ -47,7 +46,7 @@ func (r UserServiceImpl) AuthenticateUser(identity, password string) (string, er
 		return "", err
 	}
 
-	if !r.checkPasswordHash(password, user.Password) {
+	if err := r.checkPasswordHash(password, user.Password); err != nil {
 		return "", err
 	}
 
@@ -72,7 +71,7 @@ func (r UserServiceImpl) AuthenticateUser(identity, password string) (string, er
 	claims["permissions"] = permissions
 	claims["exp"] = time.Now().Add(time.Minute * 30).Unix()
 
-	t, err := token.SignedString([]byte(viper.GetString(config.JwtSecret)))
+	t, err := token.SignedString([]byte(viper.GetString("jwt.secret")))
 	if err != nil {
 		return "", err
 	}
@@ -124,9 +123,11 @@ func (r UserServiceImpl) DeleteUser(id int, deletedBy string) error {
 	return r.repo.DeleteUser(id, deletedBy)
 }
 
-func (r UserServiceImpl) checkPasswordHash(password, hash string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
-	return err == nil
+func (r UserServiceImpl) checkPasswordHash(password, hash string) error {
+	if err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password)); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (r UserServiceImpl) hashPassword(password string) (string, error) {
@@ -134,5 +135,5 @@ func (r UserServiceImpl) hashPassword(password string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return string(bytes), err
+	return string(bytes), nil
 }

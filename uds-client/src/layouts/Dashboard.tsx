@@ -1,10 +1,13 @@
 import {NavLink, Outlet, useNavigate} from "react-router-dom";
+import {useAuthApi} from "../hooks/useAuthApi.ts";
 
 const Dashboard = () => {
     const navigate = useNavigate();
 
-    const handleLogout = () => {
-        localStorage.removeItem("token");
+    const { logoutHandler, auth } = useAuthApi();
+
+    const handleLogout = async () => {
+        await logoutHandler();
         navigate("/login", {replace: true});
     };
 
@@ -36,9 +39,14 @@ const Dashboard = () => {
                                 </NavLink>
                             </li>
                         </ul>
-                        <button className="btn btn-outline-danger ms-auto" onClick={handleLogout}>
-                            Logout
-                        </button>
+                        <div className="ms-auto d-flex align-items-center gap-2">
+                            <span className="navbar-text fw-bold">
+                                Hallo {auth?.username}
+                            </span>
+                            <button className="btn btn-outline-danger" onClick={handleLogout}>
+                                Logout
+                            </button>
+                        </div>
                     </div>
                 </div>
             </nav>

@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"myapp/api"
 	"myapp/dto"
+	"myapp/pkg/repository"
+	"myapp/pkg/service"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -78,6 +80,22 @@ func seedDB(db *gorm.DB) error {
 
 	role := dto.CrRole{Name: "SUPER_ADMIN", CreatedBy: "SYSTEM"}
 	if err := db.FirstOrCreate(&role, dto.CrRole{Name: role.Name}).Error; err != nil {
+		return err
+	}
+
+	userRepo := repository.NewUserRepository(db)
+	userService := service.NewUserService(userRepo)
+
+	superAdmin := dto.CrUser{
+		Username: "admin",
+		Name:     "admin",
+		Email:    "admin@gmail.com",
+		Password: "admin",
+		RoleID:   role.ID,
+		Status:   api.STATUS_ACTIVE,
+	}
+
+	if err := userService.CreateUser(&superAdmin, "SYSTEM"); err != nil {
 		return err
 	}
 
