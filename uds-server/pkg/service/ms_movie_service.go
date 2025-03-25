@@ -11,7 +11,7 @@ import (
 type MovieService interface {
 	GetMovies(page, limit int) (int, int, int, []dto.MsMovie, error)
 	GetMovieById(id int) (*dto.MsMovie, error)
-	CreateMovie(req *dto.MsMovie, videoFile *multipart.FileHeader, posterFile *multipart.FileHeader, createdBy string) error
+	CreateMovie(req *dto.MsMovie, videoFile *multipart.FileHeader, posterFile *multipart.FileHeader, createdBy string) (int, error)
 	UpdateMovie(id int, req *dto.MsMovie, videoFile *multipart.FileHeader, posterFile *multipart.FileHeader, updatedBy string) error
 	DeleteMovie(id int, deletedBy string) error
 }
@@ -41,7 +41,7 @@ func (m movieServiceImpl) GetMovieById(id int) (*dto.MsMovie, error) {
 	return m.repo.GetMovieByID(id)
 }
 
-func (m movieServiceImpl) CreateMovie(req *dto.MsMovie, videoFile *multipart.FileHeader, posterFile *multipart.FileHeader, createdBy string) error {
+func (m movieServiceImpl) CreateMovie(req *dto.MsMovie, videoFile *multipart.FileHeader, posterFile *multipart.FileHeader, createdBy string) (int, error) {
 	if videoFile != nil {
 		videoUrl, _ := utils.Mp4ToFMp4(videoFile)
 		req.VideoUrl = videoUrl
@@ -52,11 +52,12 @@ func (m movieServiceImpl) CreateMovie(req *dto.MsMovie, videoFile *multipart.Fil
 		req.PosterUrl = posterUrl
 	}
 
-	if _, err := m.repo.CreateMovie(req, createdBy); err != nil {
-		return err
+	id, err := m.repo.CreateMovie(req, createdBy)
+	if err != nil {
+		return 0, err
 	}
 
-	return nil
+	return id, nil
 }
 
 func (m movieServiceImpl) UpdateMovie(id int, req *dto.MsMovie, videoFile *multipart.FileHeader, posterFile *multipart.FileHeader, updatedBy string) error {

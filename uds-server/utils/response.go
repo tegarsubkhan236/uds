@@ -49,11 +49,12 @@ func ResponseOK(ctx *fiber.Ctx, data any) error {
 }
 
 // ResponseCreated responds with success for created data
-func ResponseCreated(ctx *fiber.Ctx) error {
+func ResponseCreated(ctx *fiber.Ctx, id int) error {
 	return ctx.Status(fiber.StatusCreated).JSON(&successResponse{
 		Code:    fiber.StatusCreated,
 		Status:  "Created",
 		Message: "Data created successfully",
+		Data:    id,
 	})
 }
 

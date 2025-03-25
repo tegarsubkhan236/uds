@@ -1,9 +1,14 @@
 import React, {useEffect, useState} from "react";
 import {useMovieApi} from "../hooks/useMovieApi.ts";
+import VideoDropzone from "../components/VideoUpload.tsx";
+import ImageDropzone from "../components/ImageUpload.tsx";
 
 const VoD = () => {
     const [page] = useState(1);
     const [limit] = useState(10);
+    const [videoFile, setVideoFile] = useState<File | null>(null);
+    const [imageFile, setImageFile] = useState<File | null>(null);
+    const [title, setTitle] = useState<string>("");
     const {
         data,
         loading,
@@ -13,39 +18,23 @@ const VoD = () => {
         createMovieHandler,
         // updateMovieHandler,
         // deleteMovieHandler,
-    } = useMovieApi()
-    const [newMovie, setNewMovie] = useState({
-        title: '',
-        poster_url: null as File | null,
-        video_url: null as File | null,
-    });
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const {name, value, type, files} = e.target;
-        if (type === "file") {
-            setNewMovie((prevState) => ({
-                ...prevState,
-                [name]: files ? files[0] : null,
-            }));
-        } else {
-            setNewMovie((prevState) => ({
-                ...prevState,
-                [name]: value,
-            }));
-        }
-    };
+    } = useMovieApi();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const {title, poster_url, video_url} = newMovie;
-
-        if (!title || !poster_url || !video_url) {
+        if (!title || !videoFile || !imageFile) {
             alert("All fields are required");
             return;
         }
+        await createMovieHandler({
+            title,
+            video_url: videoFile,
+            poster_url: imageFile,
+        });
 
-        await createMovieHandler({title, poster_url, video_url});
-        setNewMovie({title: '', poster_url: null, video_url: null});
+        setTitle("");
+        setVideoFile(null);
+        setImageFile(null);
     };
 
     useEffect(() => {
@@ -61,67 +50,72 @@ const VoD = () => {
     if (error) return <div>{error}</div>;
 
     return (
-        <>
-            <h1>Movie</h1>
-            <hr/>
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    name="title"
-                    value={newMovie.title}
-                    onChange={handleInputChange}
-                    placeholder="Title"
-                />{" "}
-                <br/>
-                <label>Poster: </label>
-                <input
-                    type="file"
-                    name="poster_url"
-                    onChange={handleInputChange}
-                />
-                <br/>
-                <label>Video: </label>
-                <input
-                    type="file"
-                    name="video_url"
-                    onChange={handleInputChange}
-                />
-                <br/>
-                <button type="submit">Save</button>
-            </form>
-            <hr/>
-            <hr/>
-            <table>
-                <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Title</th>
-                    <th>Action</th>
-                </tr>
-                </thead>
-                <tbody>
-                {data.map((movie) => (
-                    <tr key={movie.id}>
-                        <td>{movie.id}</td>
-                        <td>{movie.title}</td>
-                        <td>
-                            <button onClick={() => handleFetchMovie(movie.id)}>
-                                View Detail
-                            </button>
-                            |
-                            <button onClick={() => handleFetchMovie(movie.id)}>
-                                Delete
-                            </button>|
-                            <button onClick={() => handleFetchMovie(movie.id)}>
-                                Update
-                            </button>
-                        </td>
-                    </tr>
-                ))}
-                </tbody>
-            </table>
-            <hr/>
-        </>
+        <div className="row mt-4">
+            <div className="col-md-4 col-xs-12 mb-4">
+                <div className="card">
+                    <div className="card-header">
+                        <h4>Upload Video</h4>
+                    </div>
+                    <div className="card-body">
+                        <form onSubmit={handleSubmit}>
+                            <div className="mb-3">
+                                <VideoDropzone name="video_file" onFileChange={setVideoFile}/>
+                            </div>
+                            <div className="mb-3">
+                                <ImageDropzone name="image_file" onFileChange={setImageFile}/>
+                            </div>
+                            <div className="mb-3">
+                                <input name="title"
+                                       type="text"
+                                       className="form-control"
+                                       placeholder="Video Title"
+                                       value={title}
+                                       onChange={(e) => setTitle(e.target.value)}/>
+                            </div>
+                            <button type="submit" className="btn btn-primary w-100">Upload</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div className="col-md-8 col-xs-12">
+                <div className="card">
+                    <div className="card-header">
+                        <h4>Your Video</h4>
+                    </div>
+                    <div className="card-body">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Title</th>
+                                <th>Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {data.map((movie) => (
+                                <tr key={movie.id}>
+                                    <td>{movie.id}</td>
+                                    <td>{movie.title}</td>
+                                    <td>
+                                        <button onClick={() => handleFetchMovie(movie.id)}>
+                                            View Detail
+                                        </button>
+                                        |
+                                        <button onClick={() => handleFetchMovie(movie.id)}>
+                                            Delete
+                                        </button>|
+                                        <button onClick={() => handleFetchMovie(movie.id)}>
+                                            Update
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     );
 };
 

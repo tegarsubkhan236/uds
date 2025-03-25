@@ -39,7 +39,9 @@ export const useMovieApi = () => {
         setError(null);
         try {
             const newMovieID = await createMovie(movieData);
+            console.log("newMovieID", newMovieID)
             const newMovie = await fetchMovieById(newMovieID);
+            console.log("newMovie", newMovie)
             setData((prevMovies) => [...prevMovies, newMovie]);
         } catch (err) {
             setError(handleError(err));

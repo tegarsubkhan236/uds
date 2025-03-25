@@ -55,7 +55,7 @@ func PermissionInsert(service service.PermissionService) fiber.Handler {
 			return utils.ResponseInternalServerError(ctx, err.Error())
 		}
 
-		return utils.ResponseCreated(ctx)
+		return utils.ResponseCreated(ctx, 0)
 	}
 }
 

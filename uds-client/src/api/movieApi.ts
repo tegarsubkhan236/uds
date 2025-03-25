@@ -46,7 +46,7 @@ const MovieApi = () => {
                 "Content-Type": "multipart/form-data",
             },
         });
-        return response.data;
+        return response.data.data;
     };
 
     const updateMovie = async (id: number, movie: Partial<Movie>): Promise<Movie> => {

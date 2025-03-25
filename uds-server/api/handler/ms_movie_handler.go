@@ -65,11 +65,12 @@ func HandleCreateMovie(service service.MovieService) fiber.Handler {
 		//	return utils.ResponseUnauthorized(ctx)
 		//}
 
-		if err := service.CreateMovie(req.ToEntity(), videoFile, posterFile, "TEST CREATE USER"); err != nil {
+		id, err := service.CreateMovie(req.ToEntity(), videoFile, posterFile, "TEST CREATE USER")
+		if err != nil {
 			return utils.ResponseInternalServerError(ctx, err.Error())
 		}
 
-		return utils.ResponseCreated(ctx)
+		return utils.ResponseCreated(ctx, id)
 	}
 }
 
