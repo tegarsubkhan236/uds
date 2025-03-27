@@ -26,14 +26,16 @@ func Mp4ToFMp4(fileHeader *multipart.FileHeader) (string, error) {
 		return "", err
 	}
 
-	hlsDir := filepath.Join(videoDir, "hls_"+strconv.Itoa(int(time.Now().Unix())))
-	err = os.MkdirAll(hlsDir, os.ModePerm)
+	hlsDir := "hls_" + strconv.Itoa(int(time.Now().Unix()))
+
+	absolutePath := filepath.Join(videoDir, hlsDir)
+	err = os.MkdirAll(absolutePath, os.ModePerm)
 	if err != nil {
 		return "", err
 	}
 
 	initFileName := "init.mp4"
-	playlistPath := filepath.Join(hlsDir, "playlist.m3u8")
+	playlistPath := filepath.Join(absolutePath, "playlist.m3u8")
 
 	srcFile, err := fileHeader.Open()
 	if err != nil {
@@ -41,7 +43,7 @@ func Mp4ToFMp4(fileHeader *multipart.FileHeader) (string, error) {
 	}
 	defer srcFile.Close()
 
-	originalFilePath := filepath.Join(hlsDir, fileHeader.Filename)
+	originalFilePath := filepath.Join(absolutePath, fileHeader.Filename)
 	outFile, err := os.Create(originalFilePath)
 	if err != nil {
 		return "", err
@@ -65,7 +67,7 @@ func Mp4ToFMp4(fileHeader *multipart.FileHeader) (string, error) {
 		playlistPath,
 	)
 
-	logFile, err := os.Create(filepath.Join(hlsDir, "ffmpeg_output.log"))
+	logFile, err := os.Create(filepath.Join(absolutePath, "ffmpeg_output.log"))
 	if err != nil {
 		return "", err
 	}
@@ -91,7 +93,9 @@ func Mp4ToFMp4(fileHeader *multipart.FileHeader) (string, error) {
 		fmt.Printf("Warning: Failed to delete original file: %v\n", err)
 	}
 
-	return hlsDir, nil
+	relativePath := filepath.Join("videos", hlsDir, "playlist.m3u8")
+
+	return "/" + relativePath, nil
 }
 
 func validateVideo(header *multipart.FileHeader) error {

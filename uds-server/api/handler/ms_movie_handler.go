@@ -23,7 +23,12 @@ func HandleFetchAllMovie(service service.MovieService) fiber.Handler {
 			return utils.ResponseInternalServerError(ctx, err.Error())
 		}
 
-		return utils.ResponseOKWithPages(ctx, currentPage, lastPage, totalData, result)
+		response := make([]dto.MovieResponse, len(result))
+		for i, v := range result {
+			response[i] = v.ToResponse()
+		}
+
+		return utils.ResponseOKWithPages(ctx, currentPage, lastPage, totalData, response)
 	}
 }
 
@@ -39,7 +44,7 @@ func HandleFetchDetailMovie(service service.MovieService) fiber.Handler {
 			return utils.ResponseInternalServerError(ctx, err.Error())
 		}
 
-		return utils.ResponseOK(ctx, result)
+		return utils.ResponseOK(ctx, result.ToResponse())
 	}
 }
 

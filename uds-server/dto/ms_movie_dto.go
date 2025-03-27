@@ -1,7 +1,10 @@
 package dto
 
 import (
+	"fmt"
+	"github.com/spf13/viper"
 	"gorm.io/gorm"
+	"strings"
 	"time"
 )
 
@@ -29,5 +32,33 @@ func (r *MovieRequest) ToEntity() *MsMovie {
 		Title:     r.Title,
 		VideoUrl:  r.VideoFile,
 		PosterUrl: r.PosterFile,
+	}
+}
+
+type MovieResponse struct {
+	ID        int    `json:"id"`
+	Title     string `json:"title"`
+	VideoUrl  string `json:"video_url"`
+	PosterUrl string `json:"poster_url"`
+}
+
+func (m MsMovie) ToResponse() MovieResponse {
+	address := fmt.Sprintf("%s:%d", viper.GetString("apps.host"), viper.GetInt("apps.port"))
+
+	videoUrl := m.VideoUrl
+	if !strings.HasPrefix(videoUrl, "http") {
+		videoUrl = fmt.Sprintf("http://%s%s", address, videoUrl)
+	}
+
+	posterUrl := m.PosterUrl
+	if !strings.HasPrefix(posterUrl, "http") {
+		posterUrl = fmt.Sprintf("http://%s%s", address, posterUrl)
+	}
+
+	return MovieResponse{
+		ID:        m.ID,
+		Title:     m.Title,
+		VideoUrl:  videoUrl,
+		PosterUrl: posterUrl,
 	}
 }

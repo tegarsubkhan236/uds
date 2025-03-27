@@ -31,6 +31,7 @@ func NewFiber() *fiber.App {
 	}))
 
 	app.Static("/videos", "/home/fauzi/www/github/uds/upload/videos")
+	app.Static("/images", "/home/fauzi/www/github/uds/upload")
 
 	return app
 }

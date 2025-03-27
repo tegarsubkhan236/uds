@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import {useMovieApi} from "../hooks/useMovieApi.ts";
 import VideoDropzone from "../components/VideoUpload.tsx";
 import ImageDropzone from "../components/ImageUpload.tsx";
+import VideoPlayer from "../components/VideoPlayer.tsx";
 
 const VoD = () => {
     const [page] = useState(1);
@@ -53,10 +54,10 @@ const VoD = () => {
         <div className="row mt-4">
             <div className="col-md-4 col-xs-12 mb-4">
                 <div className="card">
-                    <div className="card-header">
-                        <h4>Upload Video</h4>
-                    </div>
                     <div className="card-body">
+                        <div className="card-title">
+                            <h5>Upload Video</h5>
+                        </div>
                         <form onSubmit={handleSubmit}>
                             <div className="mb-3">
                                 <VideoDropzone name="video_file" onFileChange={setVideoFile}/>
@@ -79,39 +80,25 @@ const VoD = () => {
             </div>
             <div className="col-md-8 col-xs-12">
                 <div className="card">
-                    <div className="card-header">
-                        <h4>Your Video</h4>
-                    </div>
                     <div className="card-body">
-                        <table>
-                            <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Title</th>
-                                <th>Action</th>
-                            </tr>
-                            </thead>
-                            <tbody>
+                        <div className="d-flex card-title">
+                            <h5>Your Video</h5>
+                            <button className="btn btn-outline-dark btn-sm ms-auto">
+                                <i className="bi bi-view-list"></i>
+                            </button>
+                        </div>
+                        <div className="row row-cols-1 row-cols-md-2 g-4">
                             {data.map((movie) => (
-                                <tr key={movie.id}>
-                                    <td>{movie.id}</td>
-                                    <td>{movie.title}</td>
-                                    <td>
-                                        <button onClick={() => handleFetchMovie(movie.id)}>
-                                            View Detail
-                                        </button>
-                                        |
-                                        <button onClick={() => handleFetchMovie(movie.id)}>
-                                            Delete
-                                        </button>|
-                                        <button onClick={() => handleFetchMovie(movie.id)}>
-                                            Update
-                                        </button>
-                                    </td>
-                                </tr>
+                            <div className="col" key={`key for ${movie.id}`}>
+                                <div className="card" onClick={() => handleFetchMovie(movie.id)}>
+                                    <VideoPlayer videoUrl={movie.video_url} posterUrl={movie.poster_url}/>
+                                    <div className="card-body">
+                                        <h5 className="card-title">{movie.title}</h5>
+                                    </div>
+                                </div>
+                            </div>
                             ))}
-                            </tbody>
-                        </table>
+                        </div>
                     </div>
                 </div>
             </div>

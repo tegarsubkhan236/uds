@@ -9,7 +9,7 @@ import (
 
 func SaveFile(fileHeader *multipart.FileHeader) (string, error) {
 	dst := "/home/fauzi/www/github/uds/upload"
-	relativePath := filepath.Join(dst, fileHeader.Filename)
+	absolutePath := filepath.Join(dst, fileHeader.Filename)
 
 	file, err := fileHeader.Open()
 	if err != nil {
@@ -17,7 +17,7 @@ func SaveFile(fileHeader *multipart.FileHeader) (string, error) {
 	}
 	defer file.Close()
 
-	outFile, err := os.Create(relativePath)
+	outFile, err := os.Create(absolutePath)
 	if err != nil {
 		return "", err
 	}
@@ -28,7 +28,9 @@ func SaveFile(fileHeader *multipart.FileHeader) (string, error) {
 		return "", err
 	}
 
-	return "./" + relativePath, nil
+	relativePath := filepath.Join("images", fileHeader.Filename)
+
+	return "/" + relativePath, nil
 }
 
 func RemoveFile(filePath string) error {
