@@ -29,8 +29,8 @@ func SetupRouter(
 	})
 
 	r.Route("/role", func(role fiber.Router) {
-		role.Use(middleware.Protected())
-		role.Get("/", middleware.Gateway(api.READ_ROLE), handler.RoleIndex(deps.RoleService))
+		//role.Use(middleware.Protected())
+		role.Get("/", handler.RoleIndex(deps.RoleService))
 		role.Get("/show", middleware.Gateway(api.READ_ROLE), handler.RoleShow(deps.RoleService))
 		role.Post("/create", middleware.Gateway(api.CREATE_ROLE), handler.RoleInsert(deps.RoleService))
 		role.Put("/update", middleware.Gateway(api.UPDATE_ROLE), handler.RoleUpdate(deps.RoleService))
@@ -54,5 +54,17 @@ func SetupRouter(
 		movie.Put("/:id", handler.HandleUpdateMovie(deps.MovieService))
 		movie.Delete("/:id", handler.HandleDeleteMovie(deps.MovieService))
 		movie.Get("/:id/stream", handler.HandleStreamMovie(deps.MovieService))
+	})
+
+	r.Route("/category", func(category fiber.Router) {
+		//movie.Use(middleware.Protected())
+		category.Get("/", handler.GetAllCategoryHandler(deps.CategoryService))
+		category.Post("/create", handler.CategoryInsert(deps.CategoryService))
+	})
+
+	r.Route("/playlist", func(category fiber.Router) {
+		//movie.Use(middleware.Protected())
+		category.Get("/", handler.GetAllPlaylistHandler(deps.PlaylistService))
+		category.Post("/create", handler.PlaylistInsert(deps.PlaylistService))
 	})
 }
