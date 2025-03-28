@@ -12,6 +12,8 @@ type Dependencies struct {
 	RoleService       service.RoleService
 	UserService       service.UserService
 	MovieService      service.MovieService
+	CategoryService   service.CategoryService
+	PlaylistService   service.PlaylistService
 }
 
 func NewDependencies(db *gorm.DB) *Dependencies {
@@ -20,5 +22,7 @@ func NewDependencies(db *gorm.DB) *Dependencies {
 		RoleService:       service.NewRoleService(repository.NewRoleRepository(db)),
 		UserService:       service.NewUserService(repository.NewUserRepository(db)),
 		MovieService:      service.NewMovieService(repository.NewMovieRepository(db)),
+		CategoryService:   service.NewCategoryService(repository.NewCategoryRepository(db)),
+		PlaylistService:   service.NewPlaylistService(repository.NewPlaylistRepository(db)),
 	}
 }

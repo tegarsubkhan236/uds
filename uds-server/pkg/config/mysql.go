@@ -34,6 +34,16 @@ func NewMysqlDB() (*gorm.DB, error) {
 		&dto.CrRolePermission{},
 		&dto.CrUser{},
 		&dto.MsMovie{},
+		&dto.MsCategory{},
+		&dto.MsPlaylist{},
+		&dto.Videos{},
+		&dto.HistorySearch{},
+		&dto.Approval{},
+		&dto.HistoryWatch{},
+		&dto.Comment{},
+		&dto.Bookmark{},
+		&dto.VideoList{},
+		&dto.HistoryVideo{},
 	); err != nil {
 		return nil, err
 	}
